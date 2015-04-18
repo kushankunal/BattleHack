@@ -10,8 +10,6 @@ var users = require('./routes/users');
 
 var app = express();
 
-
-//Wolfram Integration
 var http =require('http');
 var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 var ques = 'polio';
@@ -34,7 +32,6 @@ var req = http.request(options, function(res) {
 req.on('error', function(e) {
   console.log('problem with request: ' + e.message);
 });
-req.end();
 /*
 http.get(options, function(res) {
   var out = '';
