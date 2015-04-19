@@ -29,8 +29,13 @@ app.get('/', function(req, res) {
 	console.log(ques);
 	message = '';
 	Wolfram.query(ques, function(err, result) {
+		console.log(result.queryresult);
 		if(err) {
 			console.log(err);
+			message = "Sorry, your query didn't turn up any results.";
+		}
+		else if(result.queryresult.$.numpods=='0'){
+			console.log("No results");
 			message = "Sorry, your query didn't turn up any results.";
 		}
 		else {
@@ -43,6 +48,8 @@ app.get('/', function(req, res) {
 						var subpod = pod.subpod[b];
 						for(var c=0; c<subpod.plaintext.length; c++){
 						    var text = subpod.plaintext[c];
+						    if(message.length+text.length+2 > 1600)
+						    	break;
 						    message = message + text +"\n";
 						}
 					}

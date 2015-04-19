@@ -33,6 +33,10 @@ app.get('/', function(req, res) {
 			console.log(err);
 			message = "Sorry, your query didn't turn up any results.";
 		}
+		else if(result.queryresult.$.numpods=='0'){
+			console.log("No results");
+			message = "Sorry, your query didn't turn up any results.";
+		}
 		else {
 			for(var a=0; a<result.queryresult.pod.length; a++){
 				var pod = result.queryresult.pod[a];
