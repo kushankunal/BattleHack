@@ -50,9 +50,10 @@ app.get('/', function(req, res) {
 			}
 		}
 		console.log(message);
-		//sendMessage(message);
+		sendMessage(message);
 	});
 	var sendMessage = function(msg){
+		colsole.log("In send message");
 		client.sms.messages.post({
 		to:req.query.From,
 		from:req.query.To,

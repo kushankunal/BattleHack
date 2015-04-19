@@ -53,12 +53,13 @@ app.get('/', function(req, res) {
 		sendMessage(message);
 	});
 	var sendMessage = function(msg){
+		colsole.log("In send message");
 		client.sms.messages.post({
-		to:req.query.From,
-		from:req.query.To,
-		body:message
-		}, function(err, text) {
-			console.log('error is: '+ err);
+			to:req.query.From,
+			from:req.query.To,
+			body:message
+			}, function(err, text) {
+				console.log('error is: '+ err);
 		});
 	};
 /*	var options = {
