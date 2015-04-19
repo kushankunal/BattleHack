@@ -11,7 +11,7 @@ var xmlreader = require('xmlreader');
 var Client = require('node-wolfram');
 var Wolfram = new Client('TRR8TK-XJTTAVAGXU');
 var http =require('http');
-var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
+var client = require('twilio')('ACf51020ab431c2cbe8b7d19b258eea85e', '3249463d4994caed325189180c9cb4dc');
 	
 var message;//for response message
 var app = express();
@@ -34,17 +34,14 @@ app.get('/', function(req, res) {
 			message = "Sorry, your query didn't turn up any results.";
 		}
 		else {
-			for(var a=0; a<result.queryresult.pod.length; a++)
-			{
+			for(var a=0; a<result.queryresult.pod.length; a++){
 				var pod = result.queryresult.pod[a];
 				if(pod.subpod[0].plaintext[0]!=''){
 					message = message + pod.$.title+": \n";
 					//console.log("In loop ", message);
-					for(var b=0; b<pod.subpod.length; b++)
-					{
+					for(var b=0; b<pod.subpod.length; b++){
 						var subpod = pod.subpod[b];
-						for(var c=0; c<subpod.plaintext.length; c++)
-						{
+						for(var c=0; c<subpod.plaintext.length; c++){
 						    var text = subpod.plaintext[c];
 						    message = message + text +"\n";
 						}
@@ -52,8 +49,8 @@ app.get('/', function(req, res) {
 				}
 			}
 		}
-		console.log("message inside is: "+ message);
-		//sendMessage(message);
+		console.log(message);
+		sendMessage(message);
 	});
 	var sendMessage = function(msg){
 		client.sms.messages.post({
