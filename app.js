@@ -11,12 +11,12 @@ var users = require('./routes/users');
 var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-app.post('/', function(req, res) {
+app.get('/', function(req, res) {
 	console.log("inside");
   var http =require('http');
 	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
-	var ques = req.body.body;
-	console.log(ques+" from "+ req.body.from);
+	var ques = req.query.body;
+	console.log(ques+" from "+ req.query.from+" \n"+req.originalUrl);
 	//ques= encodeURIComponent(ques);
 	//console.log(ques);
 	
