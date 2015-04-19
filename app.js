@@ -17,6 +17,7 @@ app.get('/', function(req, res) {
 	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 	var ques = req.query.body;
 	console.log(ques+" from "+ req.baseUrl+" \n "+req.originalUrl);
+	res.send('cool');
 	//ques= encodeURIComponent(ques);
 	//console.log(ques);
 	

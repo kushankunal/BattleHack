@@ -16,7 +16,7 @@ app.get('/', function(req, res) {
   var http =require('http');
 	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 	var ques = req.query.body;
-	console.log(ques+" from "+ req.query.from+" \n"+req.originalUrl);
+	console.log(ques+" from "+ req.baseUrl+" \n "+req.originalUrl);
 	//ques= encodeURIComponent(ques);
 	//console.log(ques);
 	
