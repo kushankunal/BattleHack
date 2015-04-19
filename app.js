@@ -4,14 +4,57 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var multer= require('multer');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
+app.post('/', function(req, res) {
+	console.log("inside");
+  var http =require('http');
+	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
+	var ques = req.body.body;
+	console.log(ques+" from "+ req.body.from);
+	//ques= encodeURIComponent(ques);
+	//console.log(ques);
+	
+	/*
+	var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
+	client.sms.messages.post({
+		to:req.body.from,
+		from:'+2813774461',
+		body:'word to your mother.'
+	}, function(err, text) {
+		console.log('You sent: '+ text.body);
+		console.log('Current status of this text message is: '+ text.status);
+	});
 
 
-//Wolfram Integration
+	var options = {
+	  host: 'api.wolframalpha.com',
+	  port: 80,
+	  path: query+ques,
+	  method: 'GET'
+	};
+	var req = http.request(options, function(res) {
+	  console.log('STATUS: ' + res.statusCode);
+	  console.log('HEADERS: ' + JSON.stringify(res.headers));
+	  res.setEncoding('utf8');
+	  res.on('data', function (chunk) {
+		console.log('BODY: ' + chunk);
+	  });
+	});
+	req.on('error', function(e) {
+	  console.log('problem with request: ' + e.message);
+	});
+	req.end();
+	*/
+});
+app.listen(process.env.PORT || 8080);
+/*
+//Wolfram Integration 
 var http =require('http');
 var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 var ques = 'polio';
@@ -30,21 +73,10 @@ var req = http.request(options, function(res) {
     console.log('BODY: ' + chunk);
   });
 });
-
 req.on('error', function(e) {
   console.log('problem with request: ' + e.message);
 });
 req.end();
-/*
-http.get(options, function(res) {
-  var out = '';
-  for (var p in res) {
-    out += p + ': ' + res[p] + '\n';
-  }
-  console.log("Got response: " + out);
-}).on('error', function(e) {
-  console.log("Got error: " + e.message);
-});
 */
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
