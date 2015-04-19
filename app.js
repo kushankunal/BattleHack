@@ -43,6 +43,8 @@ app.get('/', function(req, res) {
 						var subpod = pod.subpod[b];
 						for(var c=0; c<subpod.plaintext.length; c++){
 						    var text = subpod.plaintext[c];
+						    if(message.length+text.length+2 > 1600)
+						    	break;
 						    message = message + text +"\n";
 						}
 					}
