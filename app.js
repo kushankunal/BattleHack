@@ -12,11 +12,10 @@ var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
 app.get('/', function(req, res) {
-	console.log("inside");
-  var http =require('http');
+	var http =require('http');
 	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
-	var ques = req.query.Body;
-	console.log(ques+" from "+ req.query.From+" \n "+req.originalUrl);
+	var ques = req.query;
+	console.log(ques, " from "+ req.query.From+" \n "+req.originalUrl);
 	res.status(200);
 	res.send('cool');
 	//ques= encodeURIComponent(ques);
