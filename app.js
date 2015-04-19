@@ -37,13 +37,13 @@ app.get('/', function(req, res) {
 			for(var a=0; a<result.queryresult.pod.length; a++){
 				var pod = result.queryresult.pod[a];
 				if(pod.subpod[0].plaintext[0]!=''){
-					message = message + pod.$.title+": ";
+					message = message + pod.$.title+":\n ";
 					//console.log("In loop ", message);
 					for(var b=0; b<pod.subpod.length; b++){
 						var subpod = pod.subpod[b];
 						for(var c=0; c<subpod.plaintext.length; c++){
 						    var text = subpod.plaintext[c];
-						    message = message + text +" ";
+						    message = message + text +"\n";
 						}
 					}
 				}
@@ -63,6 +63,7 @@ app.get('/', function(req, res) {
 			}, function(err, text) {
 				console.log( JSON.stringify(err, null, 4));
 		});
+		
 	};
 /*	var options = {
 	  host: 'api.wolframalpha.com',
