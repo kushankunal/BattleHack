@@ -8,7 +8,11 @@ var multer= require('multer');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var xmlreader = require('xmlreader');
-
+var Client = require('node-wolfram');
+var Wolfram = new Client('TRR8TK-XJTTAVAGXU');
+var http =require('http');
+var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
+	
 var message;//for response message
 var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
@@ -21,27 +25,46 @@ app.get('/test', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-	var http =require('http');
-	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 	var ques = req.query.Body;
 	console.log(ques);
-	//res.sendStatus(200);
-	ques= encodeURIComponent(ques);
-	console.log(ques);
-	
-	/*
-	var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
-	client.sms.messages.post({
-		to:req.body.from,
-		from:'+12813774461',
-		body:'word to your mother.'
-	}, function(err, text) {
-		console.log('You sent: '+ text.body);
-		console.log('Current status of this text message is: '+ text.status);
+	message = '';
+	Wolfram.query(ques, function(err, result) {
+		if(err) {
+			console.log(err);
+			message = "Sorry, your query didn't turn up any results.";
+		}
+		else {
+			for(var a=0; a<result.queryresult.pod.length; a++)
+			{
+				var pod = result.queryresult.pod[a];
+				if(pod.subpod[0].plaintext[0]!=''){
+					message = message + pod.$.title+": \n";
+					//console.log("In loop ", message);
+					for(var b=0; b<pod.subpod.length; b++)
+					{
+						var subpod = pod.subpod[b];
+						for(var c=0; c<subpod.plaintext.length; c++)
+						{
+						    var text = subpod.plaintext[c];
+						    message = message + text +"\n";
+						}
+					}
+				}
+			}
+		}
+		console.log("message inside is: "+ message);
+		//sendMessage(message);
 	});
-*/
-
-	var options = {
+	var sendMessage = function(msg){
+		client.sms.messages.post({
+		to:req.query.From,
+		from:req.query.To,
+		body:message
+		}, function(err, text) {
+			console.log('error is: '+ err);
+		});
+	};
+/*	var options = {
 	  host: 'api.wolframalpha.com',
 	  port: 80,
 	  path: query+ques,
@@ -65,14 +88,14 @@ app.get('/', function(req, res) {
 				});
 			}
     	});
-    	console.log(message);
+    	//console.log(message);
 	  });
 	});
 	req.on('error', function(e) {
 	  console.log('problem with request: ' + e.message);
 	});
 	req.end();
-	
+*/	
 });
 app.listen(process.env.PORT || 8080);
 /*
