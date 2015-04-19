@@ -24,7 +24,7 @@ app.post('/', function(req, res) {
 	var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
 	client.sms.messages.post({
 		to:req.body.from,
-		from:'+2813774461',
+		from:'+12813774461',
 		body:'word to your mother.'
 	}, function(err, text) {
 		console.log('You sent: '+ text.body);
