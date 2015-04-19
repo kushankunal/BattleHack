@@ -7,7 +7,9 @@ var bodyParser = require('body-parser');
 var multer= require('multer');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var xmlreader = require('xmlreader');
 
+var message;//for response message
 var app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -22,10 +24,10 @@ app.get('/', function(req, res) {
 	var http =require('http');
 	var query = '/v2/query?appid=TRR8TK-XJTTAVAGXU&input=';
 	var ques = req.query.Body;
-	console.log(ques, " from ", req.query.From);
-	res.sendStatus(200);
-	//ques= encodeURIComponent(ques);
-	//console.log(ques);
+	console.log(ques);
+	//res.sendStatus(200);
+	ques= encodeURIComponent(ques);
+	console.log(ques);
 	
 	/*
 	var client = require('twilio')('PN65ae80d78ebe8deeb91222b10c6d89c8', 'ACf51020ab431c2cbe8b7d19b258eea85e');
@@ -37,7 +39,7 @@ app.get('/', function(req, res) {
 		console.log('You sent: '+ text.body);
 		console.log('Current status of this text message is: '+ text.status);
 	});
-
+*/
 
 	var options = {
 	  host: 'api.wolframalpha.com',
@@ -50,14 +52,27 @@ app.get('/', function(req, res) {
 	  console.log('HEADERS: ' + JSON.stringify(res.headers));
 	  res.setEncoding('utf8');
 	  res.on('data', function (chunk) {
-		console.log('BODY: ' + chunk);
+	  	message='';
+	  	console.log("got data ",chunk);
+	  	xmlreader.read(chunk, function (err, res){
+    		if(err) return console.log(err);
+    		/*if(res.queryresult.attributes().success=='false'){
+    			message="Sorry, your query turned up no result.";
+    		}else {
+    			res.queryresult.pod.each(function(i,pod){
+					if(pod.subpod.plaintext.text()!="")
+						message = message + pod.attributes().title+": "+pod.subpod.plaintext.text()+"\n";
+				});
+			}*/
+    	});
+    	//console.log(message);
 	  });
 	});
 	req.on('error', function(e) {
 	  console.log('problem with request: ' + e.message);
 	});
 	req.end();
-	*/
+	
 });
 app.listen(process.env.PORT || 8080);
 /*
