@@ -28,36 +28,63 @@ app.get('/', function(req, res) {
 	var ques = req.query.Body;
 	console.log(ques);
 	message = '';
-	Wolfram.query(ques, function(err, result) {
-		if(err) {
-			console.log(err);
-			message = "Sorry, your query didn't turn up any results.";
-		}
-		else if(result.queryresult.$.numpods=='0'){
-			console.log("No results");
-			message = "Sorry, your query didn't turn up any results.";
-		}
-		else {
-			for(var a=0; a<result.queryresult.pod.length; a++){
-				var pod = result.queryresult.pod[a];
-				if(pod.subpod[0].plaintext[0]!=''){
-					message = message + pod.$.title+":\n ";
-					//console.log("In loop ", message);
-					for(var b=0; b<pod.subpod.length; b++){
-						var subpod = pod.subpod[b];
-						for(var c=0; c<subpod.plaintext.length; c++){
-						    var text = subpod.plaintext[c];
-						    if(message.length+text.length+2 > 1600)
-						    	break;
-						    message = message + text +"\n";
+	var request = require('request');
+	var detectLanguageQuery='https://translate.yandex.net/api/v1.5/tr.json/detect?key=trnsl.1.1.20150419T130526Z.17acbe8a08564c85.5ffe6996188a8752baee5f3b83172670f7d989da&text=';
+	var url =detectLanguageQuery+encodeURIComponent(ques);
+	var lang;
+	request(url, function (error, response, body) {
+	  if (!error) {
+		var json=JSON.parse(body)
+		lang=json.lang;
+		console.log(json.lang);
+	  }
+	});
+	if(lang!='en'){
+		console.log("Not in English\n");
+		var translateQuery='https://translate.yandex.net/api/v1.5/tr.json/translate?key=trnsl.1.1.20150419T130526Z.17acbe8a08564c85.5ffe6996188a8752baee5f3b83172670f7d989da&lang=';
+		var url =translateQuery+lang+'-en&text='+encodeURIComponent(ques);
+		var text;
+		request(url, function (error, response, body) {
+		  if (!error) {
+			var json=JSON.parse(body)
+			text=json.text;
+			console.log(text);
+		  }
+		});
+		queryWolfram(text);
+	}
+	var queryWolfram = function(ques){
+		Wolfram.query(ques, function(err, result) {
+			if(err) {
+				console.log(err);
+				message = "Sorry, your query didn't turn up any results.";
+			}
+			else if(result.queryresult.$.numpods=='0'){
+				console.log("No results");
+				message = "Sorry, your query didn't turn up any results.";
+			}
+			else {
+				for(var a=0; a<result.queryresult.pod.length; a++){
+					var pod = result.queryresult.pod[a];
+					if(pod.subpod[0].plaintext[0]!=''){
+						message = message + pod.$.title+":\n ";
+						//console.log("In loop ", message);
+						for(var b=0; b<pod.subpod.length; b++){
+							var subpod = pod.subpod[b];
+							for(var c=0; c<subpod.plaintext.length; c++){
+								var text = subpod.plaintext[c];
+								if(message.length+text.length+2 > 1600)
+									break;
+								message = message + text +"\n";
+							}
 						}
 					}
 				}
 			}
-		}
-		console.log(message);
-		sendMessage(message);
-	});
+			console.log(message);
+			sendMessage(message);
+		});
+	};
 	var sendMessage = function(msg){
 		console.log("In send message ",req.query.From," ",req.query.To);
 		var To=req.query.From;
@@ -68,9 +95,9 @@ app.get('/', function(req, res) {
 			body:message
 			}, function(err, text) {
 				console.log( JSON.stringify(err, null, 4));
-		});
-		
+		});		
 	};
+});
 /*	var options = {
 	  host: 'api.wolframalpha.com',
 	  port: 80,
@@ -103,7 +130,7 @@ app.get('/', function(req, res) {
 	});
 	req.end();
 */	
-});
+
 app.listen(process.env.PORT || 8080);
 /*
 //Wolfram Integration 
